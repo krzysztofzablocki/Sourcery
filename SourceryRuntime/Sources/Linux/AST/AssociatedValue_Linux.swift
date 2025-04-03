@@ -21,6 +21,20 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
                 return defaultValue
             case "annotations":
                 return annotations
+            case "isArray":
+                return isArray
+            case "isClosure":
+                return isClosure
+            case "isDictionary":
+                return isDictionary
+            case "isTuple":
+                return isTuple
+            case "isOptional":
+                return isOptional
+            case "isImplicitlyUnwrappedOptional":
+                return isImplicitlyUnwrappedOptional
+            case "isGeneric":
+                return typeName.isGeneric
             default:
                 fatalError("unable to lookup: \(member) in \(self)")
         }
