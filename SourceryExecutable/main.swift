@@ -224,12 +224,12 @@ func runCLI() {
                     baseIndentation: configuration.baseIndentation
                 ) ?? []
             }
-            defer { keepAlive.removeAll() }
 
             if keepAlive.isEmpty {
                 Log.info(String(format: "Processing time %.2f seconds", currentTimestamp() - start))
             } else {
                 RunLoop.current.run()
+                _ = keepAlive
             }
         } catch {
             if isDryRun {
