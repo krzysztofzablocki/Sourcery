@@ -3891,6 +3891,20 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
                 return defaultValue
             case "annotations":
                 return annotations
+            case "isArray":
+                return isArray
+            case "isClosure":
+                return isClosure
+            case "isDictionary":
+                return isDictionary
+            case "isTuple":
+                return isTuple
+            case "isOptional":
+                return isOptional
+            case "isImplicitlyUnwrappedOptional":
+                return isImplicitlyUnwrappedOptional
+            case "isGeneric":
+                return typeName.isGeneric
             default:
                 fatalError("unable to lookup: \\(member) in \\(self)")
         }
@@ -5381,6 +5395,8 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
                 return isOptionalReturnType
             case "actualReturnTypeName":
                 return actualReturnTypeName
+            case "isThrowsTypeGeneric":
+                return isThrowsTypeGeneric
             case "isDynamic":
                 return isDynamic
             case "genericRequirements":
@@ -6609,6 +6625,16 @@ import Foundation
 public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible, Diffable, SourceryDynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
+            case "array":
+                return array
+            case "closure":
+                return closure
+            case "dictionary":
+                return dictionary
+            case "generic":
+                return generic
+            case "set":
+                return set
             case "tuple":
                 return tuple
             case "name":
@@ -6623,12 +6649,14 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
                 return isProtocolComposition
             case "isVoid":
                 return isVoid
+            case "isArray":
+                return isArray
             case "isClosure":
                 return isClosure
-            case "closure":
-                return closure
-            case "set":
-                return set
+            case "isDictionary":
+                return isDictionary
+            case "isGeneric":
+                return isGeneric
             case "isSet":
                 return isSet
             default:
