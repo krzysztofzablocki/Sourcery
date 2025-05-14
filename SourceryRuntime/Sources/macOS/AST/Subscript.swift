@@ -257,7 +257,7 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
             self.isAsync = aDecoder.decode(forKey: "isAsync")
             self.`throws` = aDecoder.decode(forKey: "`throws`")
             self.throwsTypeName = aDecoder.decode(forKey: "throwsTypeName")
-            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else {
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
                 withVaList(["annotations"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }

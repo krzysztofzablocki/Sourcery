@@ -1,5 +1,10 @@
 # Sourcery CHANGELOG
-## 2.2.6
+
+## 2.2.7
+* Feature/typed throws support by @alexandre-pod in https://github.com/krzysztofzablocki/Sourcery/pull/1401
+* Add missing `isGeneric` dynamic member by @tayloraswift in https://github.com/krzysztofzablocki/Sourcery/pull/1408
+
+## 2.2.6 
 * Method/Initializer parameter types now resolve to the local type if it exists by @liamnichols in https://github.com/krzysztofzablocki/Sourcery/pull/1347
 * Fixed wrong relative path in symbolic link by @pavel-trafimuk in https://github.com/krzysztofzablocki/Sourcery/pull/1350
 * chore: add unchecked Sendable conformance to AutoMockable by @nekrich in https://github.com/krzysztofzablocki/Sourcery/pull/1355
