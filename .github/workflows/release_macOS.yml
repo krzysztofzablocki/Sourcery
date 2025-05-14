@@ -83,13 +83,13 @@ jobs:
           echo "FILENAME=${FILENAME}" >> $GITHUB_OUTPUT
           echo "ARTIFACTBUNDLENAME=${ARTIFACTBUNDLENAME}" >> $GITHUB_OUTPUT
       - name: 'Upload Sourcery Artifact'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.build.outputs.FILENAME }}
           path: "~/${{ steps.build.outputs.FILENAME }}"
           retention-days: 5
       - name: 'Upload Bundle Artifact'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.build.outputs.ARTIFACTBUNDLENAME }}
           path: "~/${{ steps.build.outputs.ARTIFACTBUNDLENAME }}"
