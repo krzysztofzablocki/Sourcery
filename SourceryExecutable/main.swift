@@ -229,7 +229,9 @@ func runCLI() {
                 Log.info(String(format: "Processing time %.2f seconds", currentTimestamp() - start))
             } else {
                 RunLoop.current.run()
-                _ = keepAlive
+                withExtendedLifetime(keepAlive) {
+                    _ = keepAlive
+                }
             }
         } catch {
             if isDryRun {
