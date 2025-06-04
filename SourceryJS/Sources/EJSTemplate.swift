@@ -47,12 +47,14 @@ open class EJSTemplate {
     #endif
     public static var ejsPath: Path! = bundle.path(forResource: "ejs", ofType: "js").map({ Path($0) })
 
+    private static let jsVm = JSVirtualMachine()
+
     public let sourcePath: Path
     public let templateString: String
     let ejs: String
 
     public private(set) lazy var jsContext: JSContext = {
-        let jsContext = JSContext()!
+        let jsContext = JSContext(virtualMachine: EJSTemplate.jsVm)!
         jsContext.setObject(self.templateString, forKeyedSubscript: "template" as NSString)
         jsContext.setObject(self.sourcePath.lastComponent, forKeyedSubscript: "templateName" as NSString)
         jsContext.setObject(self.context, forKeyedSubscript: "templateContext" as NSString)
