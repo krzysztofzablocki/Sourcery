@@ -233,9 +233,11 @@ import {{ import }}
 {% macro existentialVariableTypeName typeName isNotAllowedToBeImplicitlyUnwrappedOptional -%}
     {%- if typeName|contains:"<" and typeName|contains:">" -%}
         {{ typeName }}
+    {%- elif typeName|contains:"[" and typeName|contains:"]" -%}
+        {{ typeName }}
     {%- elif typeName|contains:"any " and typeName|contains:"!"  -%}
         {{ typeName | replace:"any","(any" | replace:"!",")!" }}
-    {%- elif typeName|contains:"any " and typeName.isOptional  -%}
+    {%- elif typeName|contains:"any " and typeName.isOptional and not typeName|contains:"(" -%}
         {{ typeName | replace:"any","(any" | replace:"?",")?" }}
     {%- elif typeName|contains:"any " and typeName.isClosure and typeName|contains:"?" -%}
         ({{ typeName | replace:"any","(any" | replace:"?",")?" }})
@@ -262,7 +264,9 @@ import {{ import }}
             {{ typeName | replace:"inout ","" }}
         {%- endif -%}
     {% endset %}
-    {%- if typeName|contains:"any " and typeName|contains:"!" -%}
+    {%- if typeName|contains:"[" and typeName|contains:"]" -%}
+        {{ name }}
+    {%- elif typeName|contains:"any " and typeName|contains:"!" -%}
         {{ name | replace:"any","(any" | replace:"!",")?" }}
     {%- elif typeName|contains:"any " and typeName.isOptional and typeName.isClosure -%}
         ({{ typeName.unwrappedTypeName| replace:"inout ","" | replace:"any","(any" | replace:"?",")?" }})?
@@ -295,7 +299,9 @@ import {{ import }}
             {{ typeName | replace:"inout ","" }}
         {%- endif -%}
     {% endset %}
-    {%- if typeName|contains:"any " and typeName|contains:"!" -%}
+    {%- if typeName|contains:"[" and typeName|contains:"]" -%}
+        {{ name }}
+    {%- elif typeName|contains:"any " and typeName|contains:"!" -%}
         {{ name | replace:"any","(any" | replace:"!",")?" }}
     {%- elif typeName|contains:"any " and typeName.isOptional and typeName.isClosure -%}
         ({{ typeName.unwrappedTypeName| replace:"inout ","" | replace:"any","(any" | replace:"?",")?" }})?
@@ -316,7 +322,9 @@ import {{ import }}
     {%- endif -%}
 {%- endmacro %}
 {% macro existentialParameterTypeName typeName isVariadic -%}
-    {%- if typeName|contains:"any " and typeName|contains:"?," and typeName|contains:">?" -%}
+    {%- if typeName|contains:"[" and typeName|contains:"]" -%}
+        {{ typeName }}
+    {%- elif typeName|contains:"any " and typeName|contains:"?," and typeName|contains:">?" -%}
         {{ typeName | replace:"any","(any" | replace:"?,",")?," }}
     {%- elif typeName|contains:"any " and typeName|contains:"!" -%}
         {{ typeName | replace:"any","(any" | replace:"!",")!" }}
