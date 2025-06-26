@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.2.6 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.7 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable line_length
 // swiftlint:disable variable_name
@@ -419,6 +419,90 @@ class AnyProtocolMock: AnyProtocol {
             return zAnyStubProtocolCustomStringConvertibleClosure()
         } else {
             return zAnyStubProtocolCustomStringConvertibleReturnValue
+        }
+    }
+
+
+}
+class AnyProtocolWithOptionalsMock: AnyProtocolWithOptionals {
+
+
+    var a: [any StubProtocol]?
+    var b: [Result<Void, any Error>] = []
+    var c: (Int, [(any StubProtocol)?])?
+    var d: (Int, (any StubProtocol)?) {
+        get { return underlyingD }
+        set(value) { underlyingD = value }
+    }
+    var underlyingD: ((Int, (any StubProtocol)?))!
+    var e: (Int, (any StubProtocol)?)?
+    var f: (Int, [any StubProtocol]?)?
+    var j: (anyInteger: Int, anyArray: [any StubProtocol]?)?
+
+
+    //MARK: - g
+
+    var gGStringHandlerEscapingAnyStubProtocolVoidBoolCallsCount = 0
+    var gGStringHandlerEscapingAnyStubProtocolVoidBoolCalled: Bool {
+        return gGStringHandlerEscapingAnyStubProtocolVoidBoolCallsCount > 0
+    }
+    var gGStringHandlerEscapingAnyStubProtocolVoidBoolReceivedArguments: (g: String, handler: ([any StubProtocol]?) -> Void)?
+    var gGStringHandlerEscapingAnyStubProtocolVoidBoolReceivedInvocations: [(g: String, handler: ([any StubProtocol]?) -> Void)] = []
+    var gGStringHandlerEscapingAnyStubProtocolVoidBoolReturnValue: Bool!
+    var gGStringHandlerEscapingAnyStubProtocolVoidBoolClosure: ((String, @escaping ([any StubProtocol]?) -> Void) -> Bool)?
+
+    func g(_ g: String, handler: @escaping ([any StubProtocol]?) -> Void) -> Bool {
+        gGStringHandlerEscapingAnyStubProtocolVoidBoolCallsCount += 1
+        gGStringHandlerEscapingAnyStubProtocolVoidBoolReceivedArguments = (g: g, handler: handler)
+        gGStringHandlerEscapingAnyStubProtocolVoidBoolReceivedInvocations.append((g: g, handler: handler))
+        if let gGStringHandlerEscapingAnyStubProtocolVoidBoolClosure = gGStringHandlerEscapingAnyStubProtocolVoidBoolClosure {
+            return gGStringHandlerEscapingAnyStubProtocolVoidBoolClosure(g, handler)
+        } else {
+            return gGStringHandlerEscapingAnyStubProtocolVoidBoolReturnValue
+        }
+    }
+
+    //MARK: - h
+
+    var hHStringHandlerEscapingStubProtocolVoidBoolCallsCount = 0
+    var hHStringHandlerEscapingStubProtocolVoidBoolCalled: Bool {
+        return hHStringHandlerEscapingStubProtocolVoidBoolCallsCount > 0
+    }
+    var hHStringHandlerEscapingStubProtocolVoidBoolReceivedArguments: (h: String, handler: ([StubProtocol]) -> Void)?
+    var hHStringHandlerEscapingStubProtocolVoidBoolReceivedInvocations: [(h: String, handler: ([StubProtocol]) -> Void)] = []
+    var hHStringHandlerEscapingStubProtocolVoidBoolReturnValue: Bool!
+    var hHStringHandlerEscapingStubProtocolVoidBoolClosure: ((String, @escaping ([StubProtocol]) -> Void) -> Bool)?
+
+    func h(_ h: String, handler: @escaping ([StubProtocol]) -> Void) -> Bool {
+        hHStringHandlerEscapingStubProtocolVoidBoolCallsCount += 1
+        hHStringHandlerEscapingStubProtocolVoidBoolReceivedArguments = (h: h, handler: handler)
+        hHStringHandlerEscapingStubProtocolVoidBoolReceivedInvocations.append((h: h, handler: handler))
+        if let hHStringHandlerEscapingStubProtocolVoidBoolClosure = hHStringHandlerEscapingStubProtocolVoidBoolClosure {
+            return hHStringHandlerEscapingStubProtocolVoidBoolClosure(h, handler)
+        } else {
+            return hHStringHandlerEscapingStubProtocolVoidBoolReturnValue
+        }
+    }
+
+    //MARK: - i
+
+    var iIStringHandlerEscapingAnyStubProtocolVoidBoolCallsCount = 0
+    var iIStringHandlerEscapingAnyStubProtocolVoidBoolCalled: Bool {
+        return iIStringHandlerEscapingAnyStubProtocolVoidBoolCallsCount > 0
+    }
+    var iIStringHandlerEscapingAnyStubProtocolVoidBoolReceivedArguments: (i: String, handler: ([(any StubProtocol)?]) -> Void)?
+    var iIStringHandlerEscapingAnyStubProtocolVoidBoolReceivedInvocations: [(i: String, handler: ([(any StubProtocol)?]) -> Void)] = []
+    var iIStringHandlerEscapingAnyStubProtocolVoidBoolReturnValue: Bool!
+    var iIStringHandlerEscapingAnyStubProtocolVoidBoolClosure: ((String, @escaping ([(any StubProtocol)?]) -> Void) -> Bool)?
+
+    func i(_ i: String, handler: @escaping ([(any StubProtocol)?]) -> Void) -> Bool {
+        iIStringHandlerEscapingAnyStubProtocolVoidBoolCallsCount += 1
+        iIStringHandlerEscapingAnyStubProtocolVoidBoolReceivedArguments = (i: i, handler: handler)
+        iIStringHandlerEscapingAnyStubProtocolVoidBoolReceivedInvocations.append((i: i, handler: handler))
+        if let iIStringHandlerEscapingAnyStubProtocolVoidBoolClosure = iIStringHandlerEscapingAnyStubProtocolVoidBoolClosure {
+            return iIStringHandlerEscapingAnyStubProtocolVoidBoolClosure(i, handler)
+        } else {
+            return iIStringHandlerEscapingAnyStubProtocolVoidBoolReturnValue
         }
     }
 
@@ -1422,10 +1506,10 @@ public class ProtocolWithOverridesMock: ProtocolWithOverrides {
     }
     public var doSomethingDataString_IntStringVoidReceivedData: (String)?
     public var doSomethingDataString_IntStringVoidReceivedInvocations: [(String)] = []
-    public var doSomethingDataString_IntStringVoidReturnValue: ((([Int], [String]) -> Void))!
-    public var doSomethingDataString_IntStringVoidClosure: ((String) -> (([Int], [String]) -> Void))?
+    public var doSomethingDataString_IntStringVoidReturnValue: (([Int], [String]) -> Void)!
+    public var doSomethingDataString_IntStringVoidClosure: ((String) -> ([Int], [String]) -> Void)?
 
-    public func doSomething(_ data: String) -> (([Int], [String]) -> Void) {
+    public func doSomething(_ data: String) -> ([Int], [String]) -> Void {
         doSomethingDataString_IntStringVoidCallsCount += 1
         doSomethingDataString_IntStringVoidReceivedData = data
         doSomethingDataString_IntStringVoidReceivedInvocations.append(data)
@@ -1445,10 +1529,10 @@ public class ProtocolWithOverridesMock: ProtocolWithOverrides {
     }
     public var doSomethingDataString_IntAnyVoidReceivedData: (String)?
     public var doSomethingDataString_IntAnyVoidReceivedInvocations: [(String)] = []
-    public var doSomethingDataString_IntAnyVoidReturnValue: ((([Int], [Any]) -> Void))!
-    public var doSomethingDataString_IntAnyVoidClosure: ((String) throws -> (([Int], [Any]) -> Void))?
+    public var doSomethingDataString_IntAnyVoidReturnValue: (([Int], [Any]) -> Void)!
+    public var doSomethingDataString_IntAnyVoidClosure: ((String) throws -> ([Int], [Any]) -> Void)?
 
-    public func doSomething(_ data: String) throws -> (([Int], [Any]) -> Void) {
+    public func doSomething(_ data: String) throws -> ([Int], [Any]) -> Void {
         doSomethingDataString_IntAnyVoidCallsCount += 1
         doSomethingDataString_IntAnyVoidReceivedData = data
         doSomethingDataString_IntAnyVoidReceivedInvocations.append(data)

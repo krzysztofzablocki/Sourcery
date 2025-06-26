@@ -219,6 +219,19 @@ protocol AnyProtocol: AutoMockable {
     func z() -> any StubProtocol & CustomStringConvertible
 }
 
+protocol AnyProtocolWithOptionals: AutoMockable {
+    var a: [any StubProtocol]? { get }
+    var b: [Result<Void, any Error>] { get }
+    var c: (Int, [(any StubProtocol)?])? { get }
+    var d: (Int, (any StubProtocol)?) { get }
+    var e: (Int, (any StubProtocol)?)? { get }
+    var f: (Int, [any StubProtocol]?)? { get }
+    func g(_ g: String, handler: @escaping ([any StubProtocol]?) -> Void) -> Bool
+    func h(_ h: String, handler: @escaping ([StubProtocol]) -> Void) -> Bool
+    func i(_ i: String, handler: @escaping ([(any StubProtocol)?]) -> Void) -> Bool
+    var j: (anyInteger: Int, anyArray: [any StubProtocol]?)? { get }
+}
+
 protocol SomeProtocol: AutoMockable {
     func a(_ x: (some StubProtocol)?, y: (some StubProtocol)!, z: some StubProtocol)
     func b(x: (some StubProtocol)?, y: (some StubProtocol)!, z: some StubProtocol) async -> String
