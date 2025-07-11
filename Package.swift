@@ -261,8 +261,13 @@ var dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0"),
     .package(url: "https://github.com/Quick/Quick.git", from: "3.0.0"),
     .package(url: "https://github.com/Quick/Nimble.git", from: "9.0.0"),
-    .package(url: "https://github.com/art-divin/swift-package-manager.git", exact: "1.0.8"),
 ]
+
+#if compiler(>=6.2)
+dependencies.append(.package(url: "https://github.com/swiftlang/swift-package-manager.git", revision: "5c57a39"))
+#else
+dependencies.append(.package(url: "https://github.com/art-divin/swift-package-manager.git", exact: "1.0.8"))
+#endif
 
 #if !canImport(ObjectiveC)
 dependencies.append(.package(url: "https://github.com/apple/swift-crypto.git", from: "3.0.0"))
