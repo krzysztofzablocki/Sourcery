@@ -97,8 +97,8 @@ jobs:
       working-directory: ${{ runner.temp }}/digests
       run: |
         docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-          $(printf '${{ env.REPOSITORY_LC }}@sha256:%s ' *)
+          $(printf 'ghcr.io/${{ env.REPOSITORY_LC }}@sha256:%s ' *)
 
     - name: Inspect image
       run: |
-        docker buildx imagetools inspect ${{ env.REPOSITORY_LC }}:${{ steps.meta.outputs.version }}
+        docker buildx imagetools inspect  ghcr.io/${{ env.REPOSITORY_LC }}:${{ steps.meta.outputs.version }}
