@@ -103,11 +103,11 @@ class AnyClosureProtocolMock: AnyClosureProtocol {
     var evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidCalled: Bool {
         return evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidCallsCount > 0
     }
-    var evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidReceivedArguments: (javaScriptString: String, completionHandler: ((@MainActor @Sendable (Any?, (any Error?) -> Void))?)?
-    var evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidReceivedInvocations: [(javaScriptString: String, completionHandler: ((@MainActor @Sendable (Any?, (any Error?) -> Void))?)] = []
-    var evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidClosure: ((String, ((@MainActor @Sendable (Any?, (any Error?) -> Void))?) -> Void)?
+    var evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidReceivedArguments: (javaScriptString: String, completionHandler: ((@MainActor @Sendable (Any?, (any Error)?) -> Void))?)?
+    var evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidReceivedInvocations: [(javaScriptString: String, completionHandler: ((@MainActor @Sendable (Any?, (any Error)?) -> Void))?)] = []
+    var evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidClosure: ((String, ((@MainActor @Sendable (Any?, (any Error)?) -> Void))?) -> Void)?
 
-    func evaluateJavaScript(_ javaScriptString: String, completionHandler: ((@MainActor @Sendable (Any?, (any Error?) -> Void))?) {
+    func evaluateJavaScript(_ javaScriptString: String, completionHandler: (((@MainActor @Sendable (Any?, (any Error)?) -> Void))?)) {
         evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidCallsCount += 1
         evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidReceivedArguments = (javaScriptString: javaScriptString, completionHandler: completionHandler)
         evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidReceivedInvocations.append((javaScriptString: javaScriptString, completionHandler: completionHandler))
@@ -157,11 +157,11 @@ class AnyProtocolMock: AnyProtocol {
     var fXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolVoidCalled: Bool {
         return fXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolVoidCallsCount > 0
     }
-    var fXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolVoidReceivedArguments: (x: (any StubProtocol?, y: (any StubProtocol)!, z: any StubProtocol)?
-    var fXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolVoidReceivedInvocations: [(x: (any StubProtocol?, y: (any StubProtocol)!, z: any StubProtocol)] = []
-    var fXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolVoidClosure: (((any StubProtocol?, (any StubProtocol)!, any StubProtocol) -> Void)?
+    var fXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolVoidReceivedArguments: (x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)?
+    var fXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolVoidReceivedInvocations: [(x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)] = []
+    var fXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolVoidClosure: (((any StubProtocol)?, (any StubProtocol)?, any StubProtocol) -> Void)?
 
-    func f(_ x: (any StubProtocol?, y: (any StubProtocol)!, z: any StubProtocol) {
+    func f(_ x: (any StubProtocol)?, y: (any StubProtocol)!, z: any StubProtocol) {
         fXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolVoidCallsCount += 1
         fXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolVoidReceivedArguments = (x: x, y: y, z: z)
         fXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolVoidReceivedInvocations.append((x: x, y: y, z: z))
@@ -174,12 +174,12 @@ class AnyProtocolMock: AnyProtocol {
     var jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringCalled: Bool {
         return jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringCallsCount > 0
     }
-    var jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringReceivedArguments: (x: (any StubProtocol?, y: (any StubProtocol)!, z: any StubProtocol)?
-    var jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringReceivedInvocations: [(x: (any StubProtocol?, y: (any StubProtocol)!, z: any StubProtocol)] = []
+    var jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringReceivedArguments: (x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)?
+    var jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringReceivedInvocations: [(x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)] = []
     var jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringReturnValue: String!
-    var jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringClosure: (((any StubProtocol?, (any StubProtocol)!, any StubProtocol) async -> String)?
+    var jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringClosure: (((any StubProtocol)?, (any StubProtocol)?, any StubProtocol) async -> String)?
 
-    func j(x: (any StubProtocol?, y: (any StubProtocol)!, z: any StubProtocol) async -> String {
+    func j(x: (any StubProtocol)?, y: (any StubProtocol)!, z: any StubProtocol) async -> String {
         jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringCallsCount += 1
         jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringReceivedArguments = (x: x, y: y, z: z)
         jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringReceivedInvocations.append((x: x, y: y, z: z))
@@ -196,9 +196,9 @@ class AnyProtocolMock: AnyProtocol {
     var kXAnyStubProtocolVoidYAnyStubProtocolVoidVoidCalled: Bool {
         return kXAnyStubProtocolVoidYAnyStubProtocolVoidVoidCallsCount > 0
     }
-    var kXAnyStubProtocolVoidYAnyStubProtocolVoidVoidClosure: ((((any StubProtocol?) -> Void, (any StubProtocol) -> Void) -> Void)?
+    var kXAnyStubProtocolVoidYAnyStubProtocolVoidVoidClosure: ((((any StubProtocol)?) -> Void, (any StubProtocol) -> Void) -> Void)?
 
-    func k(x: ((any StubProtocol?) -> Void, y: (any StubProtocol) -> Void) {
+    func k(x: ((any StubProtocol)?) -> Void, y: (any StubProtocol) -> Void) {
         kXAnyStubProtocolVoidYAnyStubProtocolVoidVoidCallsCount += 1
         kXAnyStubProtocolVoidYAnyStubProtocolVoidVoidClosure?(x, y)
     }
@@ -209,9 +209,9 @@ class AnyProtocolMock: AnyProtocol {
     var lXAnyStubProtocolVoidYAnyStubProtocolVoidVoidCalled: Bool {
         return lXAnyStubProtocolVoidYAnyStubProtocolVoidVoidCallsCount > 0
     }
-    var lXAnyStubProtocolVoidYAnyStubProtocolVoidVoidClosure: ((((any StubProtocol?) -> Void, (any StubProtocol) -> Void) -> Void)?
+    var lXAnyStubProtocolVoidYAnyStubProtocolVoidVoidClosure: ((((any StubProtocol)?) -> Void, (any StubProtocol) -> Void) -> Void)?
 
-    func l(x: ((any StubProtocol?) -> Void, y: (any StubProtocol) -> Void) {
+    func l(x: ((any StubProtocol)?) -> Void, y: (any StubProtocol) -> Void) {
         lXAnyStubProtocolVoidYAnyStubProtocolVoidVoidCallsCount += 1
         lXAnyStubProtocolVoidYAnyStubProtocolVoidVoidClosure?(x, y)
     }
@@ -239,11 +239,11 @@ class AnyProtocolMock: AnyProtocol {
     var nXEscapingAnyStubProtocolVoidVoidCalled: Bool {
         return nXEscapingAnyStubProtocolVoidVoidCallsCount > 0
     }
-    var nXEscapingAnyStubProtocolVoidVoidReceivedX: ((((any StubProtocol?) -> Void))?
-    var nXEscapingAnyStubProtocolVoidVoidReceivedInvocations: [((((any StubProtocol?) -> Void))] = []
-    var nXEscapingAnyStubProtocolVoidVoidClosure: ((@escaping ((any StubProtocol?) -> Void) -> Void)?
+    var nXEscapingAnyStubProtocolVoidVoidReceivedX: ((((any StubProtocol)?) -> Void))?
+    var nXEscapingAnyStubProtocolVoidVoidReceivedInvocations: [((((any StubProtocol)?) -> Void))] = []
+    var nXEscapingAnyStubProtocolVoidVoidClosure: ((@escaping ((any StubProtocol)?) -> Void) -> Void)?
 
-    func n(x: @escaping ((any StubProtocol?) -> Void) {
+    func n(x: @escaping ((any StubProtocol)?) -> Void) {
         nXEscapingAnyStubProtocolVoidVoidCallsCount += 1
         nXEscapingAnyStubProtocolVoidVoidReceivedX = x
         nXEscapingAnyStubProtocolVoidVoidReceivedInvocations.append(x)
@@ -258,9 +258,9 @@ class AnyProtocolMock: AnyProtocol {
     }
     var pXAnyStubWithAnyNameProtocolVoidReceivedX: (any StubWithAnyNameProtocol)?
     var pXAnyStubWithAnyNameProtocolVoidReceivedInvocations: [(any StubWithAnyNameProtocol)?] = []
-    var pXAnyStubWithAnyNameProtocolVoidClosure: (((any StubWithAnyNameProtocol?) -> Void)?
+    var pXAnyStubWithAnyNameProtocolVoidClosure: (((any StubWithAnyNameProtocol)?) -> Void)?
 
-    func p(_ x: (any StubWithAnyNameProtocol?) {
+    func p(_ x: (any StubWithAnyNameProtocol)?) {
         pXAnyStubWithAnyNameProtocolVoidCallsCount += 1
         pXAnyStubWithAnyNameProtocolVoidReceivedX = x
         pXAnyStubWithAnyNameProtocolVoidReceivedInvocations.append(x)
@@ -873,7 +873,7 @@ class ExampleVarargFourMock: ExampleVarargFour {
     }
     var totoArgStringAnyCollectionVoidVoidClosure: (((String, any Collection...) -> Void) -> Void)?
 
-    func toto(arg: (String, any Collection...) -> Void) {
+    func toto(arg: ((String, any Collection...) -> Void)) {
         totoArgStringAnyCollectionVoidVoidCallsCount += 1
         totoArgStringAnyCollectionVoidVoidClosure?(arg)
     }
@@ -893,7 +893,7 @@ class ExampleVarargThreeMock: ExampleVarargThree {
     }
     var totoArgStringAnyCollectionAnyCollectionVoidClosure: (((String, any Collection...) -> any Collection) -> Void)?
 
-    func toto(arg: (String, any Collection...) -> any Collection) {
+    func toto(arg: ((String, any Collection...) -> any Collection)) {
         totoArgStringAnyCollectionAnyCollectionVoidCallsCount += 1
         totoArgStringAnyCollectionAnyCollectionVoidClosure?(arg)
     }
@@ -1098,11 +1098,11 @@ class FunctionWithNullableCompletionThatHasNullableAnyParameterProtocolMock: Fun
     var addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidCalled: Bool {
         return addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidCallsCount > 0
     }
-    var addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidReceivedArguments: (request: Int, completionHandler: ((((any Error?) -> Void))?)?
-    var addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidReceivedInvocations: [(request: Int, completionHandler: ((((any Error?) -> Void))?)] = []
-    var addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidClosure: ((Int, ((((any Error?) -> Void))?) -> Void)?
+    var addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidReceivedArguments: (request: Int, completionHandler: ((((any Error)?) -> Void))?)?
+    var addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidReceivedInvocations: [(request: Int, completionHandler: ((((any Error)?) -> Void))?)] = []
+    var addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidClosure: ((Int, ((((any Error)?) -> Void))?) -> Void)?
 
-    func add(_ request: Int, withCompletionHandler completionHandler: ((((any Error?) -> Void))?) {
+    func add(_ request: Int, withCompletionHandler completionHandler: ((((any Error)?) -> Void))?) {
         addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidCallsCount += 1
         addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidReceivedArguments = (request: request, completionHandler: completionHandler)
         addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidReceivedInvocations.append((request: request, completionHandler: completionHandler))
@@ -1234,9 +1234,9 @@ class MultiExistentialArgumentsClosureProtocolMock: MultiExistentialArgumentsClo
     var executeCompletionAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolVoidCalled: Bool {
         return executeCompletionAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolVoidCallsCount > 0
     }
-    var executeCompletionAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolVoidClosure: ((((any StubWithSomeNameProtocol?, (any StubWithSomeNameProtocol)) -> (any StubWithSomeNameProtocol?) -> Void)?
+    var executeCompletionAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolVoidClosure: ((((any StubWithSomeNameProtocol)?, (any StubWithSomeNameProtocol)) -> (any StubWithSomeNameProtocol)?) -> Void)?
 
-    func execute(completion: ((any StubWithSomeNameProtocol?, (any StubWithSomeNameProtocol)) -> (any StubWithSomeNameProtocol?)) {
+    func execute(completion: (((any StubWithSomeNameProtocol)?, (any StubWithSomeNameProtocol)) -> (any StubWithSomeNameProtocol)?)) {
         executeCompletionAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolVoidCallsCount += 1
         executeCompletionAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolVoidClosure?(completion)
     }
@@ -1702,11 +1702,11 @@ class SomeProtocolMock: SomeProtocol {
     var aXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolVoidCalled: Bool {
         return aXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolVoidCallsCount > 0
     }
-    var aXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolVoidReceivedArguments: (x: (any StubProtocol?, y: (any StubProtocol!, z: any StubProtocol)?
-    var aXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolVoidReceivedInvocations: [(x: (any StubProtocol?, y: (any StubProtocol!, z: any StubProtocol)] = []
-    var aXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolVoidClosure: (((any StubProtocol?, (any StubProtocol!, any StubProtocol) -> Void)?
+    var aXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolVoidReceivedArguments: (x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)?
+    var aXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolVoidReceivedInvocations: [(x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)] = []
+    var aXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolVoidClosure: (((any StubProtocol)?, (any StubProtocol)?, any StubProtocol) -> Void)?
 
-    func a(_ x: (any StubProtocol?, y: (some StubProtocol)!, z: some StubProtocol) {
+    func a(_ x: (some StubProtocol)?, y: (some StubProtocol)!, z: some StubProtocol) {
         aXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolVoidCallsCount += 1
         aXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolVoidReceivedArguments = (x: x, y: y, z: z)
         aXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolVoidReceivedInvocations.append((x: x, y: y, z: z))
@@ -1719,12 +1719,12 @@ class SomeProtocolMock: SomeProtocol {
     var bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringCalled: Bool {
         return bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringCallsCount > 0
     }
-    var bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringReceivedArguments: (x: (any StubProtocol?, y: (any StubProtocol!, z: any StubProtocol)?
-    var bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringReceivedInvocations: [(x: (any StubProtocol?, y: (any StubProtocol!, z: any StubProtocol)] = []
+    var bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringReceivedArguments: (x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)?
+    var bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringReceivedInvocations: [(x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)] = []
     var bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringReturnValue: String!
-    var bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringClosure: (((any StubProtocol?, (any StubProtocol!, any StubProtocol) async -> String)?
+    var bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringClosure: (((any StubProtocol)?, (any StubProtocol)?, any StubProtocol) async -> String)?
 
-    func b(x: (any StubProtocol?, y: (some StubProtocol)!, z: some StubProtocol) async -> String {
+    func b(x: (some StubProtocol)?, y: (some StubProtocol)!, z: some StubProtocol) async -> String {
         bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringCallsCount += 1
         bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringReceivedArguments = (x: x, y: y, z: z)
         bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringReceivedInvocations.append((x: x, y: y, z: z))
@@ -1777,9 +1777,9 @@ class SomeProtocolMock: SomeProtocol {
     }
     var dXSomeStubWithSomeNameProtocolVoidReceivedX: (any StubWithSomeNameProtocol)?
     var dXSomeStubWithSomeNameProtocolVoidReceivedInvocations: [(any StubWithSomeNameProtocol)?] = []
-    var dXSomeStubWithSomeNameProtocolVoidClosure: (((any StubWithSomeNameProtocol?) -> Void)?
+    var dXSomeStubWithSomeNameProtocolVoidClosure: (((any StubWithSomeNameProtocol)?) -> Void)?
 
-    func d(_ x: (any StubWithSomeNameProtocol?) {
+    func d(_ x: (some StubWithSomeNameProtocol)?) {
         dXSomeStubWithSomeNameProtocolVoidCallsCount += 1
         dXSomeStubWithSomeNameProtocolVoidReceivedX = x
         dXSomeStubWithSomeNameProtocolVoidReceivedInvocations.append(x)
