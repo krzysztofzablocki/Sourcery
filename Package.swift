@@ -264,7 +264,7 @@ var dependencies: [Package.Dependency] = [
 ]
 
 #if compiler(>=6.2)
-dependencies.append(.package(url: "https://github.com/swiftlang/swift-package-manager.git", revision: "3c17da7")) // release/6.2
+dependencies.append(.package(url: "https://github.com/swiftlang/swift-package-manager.git", revision: "swift-6.2-RELEASE"))
 #else
 dependencies.append(.package(url: "https://github.com/art-divin/swift-package-manager.git", exact: "1.0.8"))
 #endif
