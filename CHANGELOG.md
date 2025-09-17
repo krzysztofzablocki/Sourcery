@@ -1,5 +1,13 @@
 # Sourcery CHANGELOG
 
+## 2.3.0
+* Added `withExtendedLifetime` support for better lifetime management in templates (#1419) — @swiftty
+* Fix PBXGroup duplication while linking (#1422, #1423) — @markmax12
+* Fix deadlock when using EJS templates in watch mode (#1421) — @robertjpayne
+* Fix `AutoMockable` Generation for a couple of cases with existential `any` (#1420) — @musiienko
+* Ensured compatibility with Xcode 26 (#1428, #1434, #1439) — @bo2themax 
+* Update docker workflow to also build ARM64 image (#1436) - @Cyberbeni
+
 ## 2.2.7
 * Feature/typed throws support by @alexandre-pod in https://github.com/krzysztofzablocki/Sourcery/pull/1401
 * Add missing `isGeneric` dynamic member by @tayloraswift in https://github.com/krzysztofzablocki/Sourcery/pull/1408
