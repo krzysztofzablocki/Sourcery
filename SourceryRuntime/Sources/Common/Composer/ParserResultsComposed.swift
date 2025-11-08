@@ -237,7 +237,8 @@ internal struct ParserResultsComposed {
         typealiasesByNames.forEach { _, alias in
             var aliasNamesToReplace = [alias.name]
             var finalAlias = alias
-            var visitedAliasNames = Set(aliasNamesToReplace)
+            var visitedAliasNames = Set<String>()
+            visitedAliasNames.insert(alias.name)
             while let targetAlias = typealiasesByNames[finalAlias.typeName.name] {
                 if visitedAliasNames.contains(targetAlias.name) {
                     Log.astWarning("Detected typealias cycle while resolving '\(alias.name)' -> '\(targetAlias.name)' (type name: \(finalAlias.typeName.name)).")
