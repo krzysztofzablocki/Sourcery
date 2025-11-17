@@ -1173,6 +1173,21 @@ class ParserComposerSpec: QuickSpec {
                               }
                         }
 
+                        it("does not loop forever when typealiases form a cycle") {
+                            let code = """
+                                       typealias Foo = Bar
+                                       typealias Bar = Foo
+                                       """
+
+                            guard let parserResult = try? makeParser(for: code).parse() else {
+                                fail("Failed to parse typealias cycle fixture")
+                                return
+                            }
+
+                            let composed = ParserResultsComposed(parserResult: parserResult)
+                            expect(composed.resolvedTypealiases.keys).to(contain("Foo", "Bar"))
+                        }
+
                         xit("follows through typealias contained in other types") {
                             let code =
                             """
