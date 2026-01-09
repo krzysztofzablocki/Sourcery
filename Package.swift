@@ -257,7 +257,7 @@ var dependencies: [Package.Dependency] = [
     // PathKit needs to be exact to avoid a SwiftPM bug where dependency resolution takes a very long time.
     .package(url: "https://github.com/kylef/PathKit.git", exact: "1.0.1"),
     .package(url: "https://github.com/art-divin/StencilSwiftKit.git", exact: "2.10.4"),
-    .package(url: "https://github.com/tuist/XcodeProj.git", exact: "8.24.6"),
+    .package(url: "https://github.com/tuist/XcodeProj", .upToNextMajor(from: "9.7.2")),
     .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0"),
     .package(url: "https://github.com/Quick/Quick.git", from: "3.0.0"),
     .package(url: "https://github.com/Quick/Nimble.git", from: "9.0.0"),
