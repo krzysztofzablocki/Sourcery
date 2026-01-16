@@ -142,7 +142,7 @@ Add the dependency to `.pre-commit-config.yaml`.
 
 ## Documentation
 
-Full documentation for the latest release is available [here](http://merowing.info/Sourcery/).
+Full documentation for the latest release is available [here](https://krzysztofzablocki.github.io/Sourcery/).
 
 ## Linux Support
 
