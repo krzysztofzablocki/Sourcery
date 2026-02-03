@@ -135,10 +135,10 @@ GEM
       uri
     netrc (0.11.0)
     nkf (0.2.0)
-    nokogiri (1.17.2)
+    nokogiri (1.18.8)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    nokogiri (1.17.2-arm64-darwin)
+    nokogiri (1.18.8-arm64-darwin)
       racc (~> 1.4)
     octokit (9.2.0)
       faraday (>= 1, < 3)
