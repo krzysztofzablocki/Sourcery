@@ -234,10 +234,10 @@ public class Sourcery {
             }) == nil else { return }
 
             if path.isDirectory {
-                top.append((path, (try? path.recursiveChildren()) ?? []))
+                top.append((path, (try? path.recursiveUnhiddenChildren()) ?? []))
             } else {
                 let dir = path.parent()
-                let children = (try? dir.recursiveChildren()) ?? []
+                let children = (try? dir.recursiveUnhiddenChildren()) ?? []
                 if children.contains(path) {
                     top.append((dir, children))
                 } else {
@@ -349,11 +349,11 @@ extension Sourcery {
         var allResults = [(changed: Bool, result: FileParserResult)]()
 
         let excludeSet = Set(exclude
-            .map { $0.isDirectory ? try? $0.recursiveChildren() : [$0] }
+            .map { $0.processablePaths }
             .compactMap({ $0 }).flatMap({ $0 }))
 
         try from.enumerated().forEach { index, from in
-            let fileList = from.isDirectory ? try from.recursiveChildren() : [from]
+            let fileList = from.processablePaths
             let parserGenerator: [ParserWrapper] = fileList
                 .filter { $0.isSwiftSourceFile }
                 .filter {
