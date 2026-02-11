@@ -1,5 +1,6 @@
 // Generated using Sourcery 2.2.7 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
+
 // swiftlint:disable line_length
 // swiftlint:disable variable_name
 
@@ -87,6 +88,30 @@ class AnnotatedProtocolMock: AnnotatedProtocol {
         sayHelloWithNameStringVoidReceivedName = name
         sayHelloWithNameStringVoidReceivedInvocations.append(name)
         sayHelloWithNameStringVoidClosure?(name)
+    }
+
+
+}
+class AnyClosureProtocolMock: AnyClosureProtocol {
+
+
+
+
+    //MARK: - evaluateJavaScript
+
+    var evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidCallsCount = 0
+    var evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidCalled: Bool {
+        return evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidCallsCount > 0
+    }
+    var evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidReceivedArguments: (javaScriptString: String, completionHandler: ((@MainActor @Sendable (Any?, (any Error)?) -> Void))?)?
+    var evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidReceivedInvocations: [(javaScriptString: String, completionHandler: ((@MainActor @Sendable (Any?, (any Error)?) -> Void))?)] = []
+    var evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidClosure: ((String, ((@MainActor @Sendable (Any?, (any Error)?) -> Void))?) -> Void)?
+
+    func evaluateJavaScript(_ javaScriptString: String, completionHandler: (((@MainActor @Sendable (Any?, (any Error)?) -> Void))?)) {
+        evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidCallsCount += 1
+        evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidReceivedArguments = (javaScriptString: javaScriptString, completionHandler: completionHandler)
+        evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidReceivedInvocations.append((javaScriptString: javaScriptString, completionHandler: completionHandler))
+        evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidClosure?(javaScriptString, completionHandler)
     }
 
 
