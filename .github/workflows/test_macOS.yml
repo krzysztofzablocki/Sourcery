@@ -23,7 +23,19 @@ jobs:
     - name: Print Current Xcode
       run: xcode-select -p
     - uses: actions/checkout@v3
-    - name: Run tests
-      run: swift test
+    - name: Run tests with coverage
+      run: swift test --enable-code-coverage
+    - name: Generate lcov coverage report
+      run: |
+        BIN_PATH="$(swift build --show-bin-path)"
+        xcrun llvm-cov export \
+          -format=lcov \
+          -instr-profile="$BIN_PATH/codecov/default.profdata" \
+          "$BIN_PATH/SourceryPackageTests.xctest/Contents/MacOS/SourceryPackageTests" \
+          > coverage.lcov
+    - name: Upload coverage to Qlty
+      uses: qltysh/qlty-action/coverage@v2
+      with:
+        token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+        files: coverage.lcov
 
- 
