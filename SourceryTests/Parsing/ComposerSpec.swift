@@ -1600,6 +1600,37 @@ class ParserComposerSpec: QuickSpec {
                             expect(type?.composedTypes?.last).to(equal(expectedProtocol2))
                         }
 
+                        it("exposes protocol composition conformances as iterable types") {
+                            let type = parse("""
+                                             struct API {}
+                                             struct Store {}
+                                             protocol APIProviding { var api: API { get } }
+                                             protocol StoreProviding { var store: Store { get } }
+                                             typealias Dependencies = APIProviding & StoreProviding
+                                             """).compactMap { $0 as? ProtocolComposition }.first
+
+                            expect(type?.implementedTypes.map(\.name)).to(equal(["APIProviding", "StoreProviding"]))
+                            expect(type?.allVariables.map(\.name)).to(equal(["api", "store"]))
+                            expect(type?.implementedTypes.first?.variables.first?.name).to(equal("api"))
+                        }
+
+                        it("exposes nested protocol composition conformances as iterable types") {
+                            let type = parse("""
+                                             struct API {}
+                                             struct Logger {}
+                                             struct Store {}
+                                             protocol APIProviding { var api: API { get } }
+                                             protocol LoggerProviding { var logger: Logger { get } }
+                                             protocol StoreProviding { var store: Store { get } }
+                                             typealias BaseDependencies = APIProviding & StoreProviding
+                                             typealias Dependencies = BaseDependencies & LoggerProviding
+                                             """).compactMap { $0 as? ProtocolComposition }.first { $0.name == "Dependencies" }
+
+                            let protocolNames = type?.implementedTypes.compactMap { $0 as? SourceryProtocol }.map(\.name)
+                            expect(protocolNames).to(equal(["APIProviding", "LoggerProviding", "StoreProviding"]))
+                            expect(type?.allVariables.map(\.name).sorted()).to(equal(["api", "logger", "store"]))
+                        }
+
                         it("should deconstruct compositions of protocols for implements") {
                             let expectedProtocol1 = Protocol(name: "Foo")
                             let expectedProtocol2 = Protocol(name: "Bar")

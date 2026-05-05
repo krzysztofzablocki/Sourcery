@@ -292,6 +292,12 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
     /// Protocols this type implements. Does not contain classes in case where composition (`&`) is used in the declaration
     public var implements: [String: Type] = [:]
 
+    // sourcery: skipEquality, skipDescription
+    /// Protocols this type implements, sorted by name.
+    public var implementedTypes: [Type] {
+        return implements.values.sorted { $0.name < $1.name }
+    }
+
     /// Contained types
     public var containedTypes: [Type] {
         didSet {

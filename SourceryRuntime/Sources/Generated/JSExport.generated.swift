@@ -43,6 +43,7 @@ import JavaScriptCore
     var basedTypes: [String: Type] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
+    var implementedTypes: [Type] { get }
     var containedTypes: [Type] { get }
     var containedType: [String: Type] { get }
     var parentName: String? { get }
@@ -141,6 +142,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var basedTypes: [String: Type] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
+    var implementedTypes: [Type] { get }
     var containedTypes: [Type] { get }
     var containedType: [String: Type] { get }
     var parentName: String? { get }
@@ -244,6 +246,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var basedTypes: [String: Type] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
+    var implementedTypes: [Type] { get }
     var containedTypes: [Type] { get }
     var containedType: [String: Type] { get }
     var parentName: String? { get }
@@ -421,6 +424,7 @@ extension Modifier: ModifierAutoJSExport {}
     var basedTypes: [String: Type] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
+    var implementedTypes: [Type] { get }
     var containedTypes: [Type] { get }
     var containedType: [String: Type] { get }
     var parentName: String? { get }
@@ -471,6 +475,7 @@ extension Protocol: ProtocolAutoJSExport {}
     var basedTypes: [String: Type] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
+    var implementedTypes: [Type] { get }
     var containedTypes: [Type] { get }
     var containedType: [String: Type] { get }
     var parentName: String? { get }
@@ -532,6 +537,7 @@ extension SetType: SetTypeAutoJSExport {}
     var basedTypes: [String: Type] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
+    var implementedTypes: [Type] { get }
     var containedTypes: [Type] { get }
     var containedType: [String: Type] { get }
     var parentName: String? { get }
@@ -640,6 +646,7 @@ extension TupleType: TupleTypeAutoJSExport {}
     var basedTypes: [String: Type] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
+    var implementedTypes: [Type] { get }
     var containedTypes: [Type] { get }
     var containedType: [String: Type] { get }
     var parentName: String? { get }

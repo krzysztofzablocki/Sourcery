@@ -2289,6 +2289,7 @@ internal struct ParserResultsComposed {
 
         /// Map associated types
         associatedTypes.forEach {
+            guard typeMap[$0.key] == nil else { return }
             if let globalName = $0.value.type?.globalName,
                let type = typeMap[globalName] {
                 typeMap[$0.key] = type
@@ -2456,8 +2457,15 @@ internal struct ParserResultsComposed {
         typealiasesByNames.forEach { _, alias in
             var aliasNamesToReplace = [alias.name]
             var finalAlias = alias
+            var visitedAliasNames = Set<String>()
+            visitedAliasNames.insert(alias.name)
             while let targetAlias = typealiasesByNames[finalAlias.typeName.name] {
+                if visitedAliasNames.contains(targetAlias.name) {
+                    Log.astWarning("Detected typealias cycle while resolving '\\(alias.name)' -> '\\(targetAlias.name)' (type name: \\(finalAlias.typeName.name)).")
+                    break
+                }
                 aliasNamesToReplace.append(targetAlias.name)
+                visitedAliasNames.insert(targetAlias.name)
                 finalAlias = targetAlias
             }
 
@@ -2763,10 +2771,11 @@ internal struct ParserResultsComposed {
         let hasGenericRequirements = containingType?.genericRequirements.isEmpty == false
         || (method != nil && method?.genericRequirements.isEmpty == false)
 
-        if hasGenericRequirements {
+        if hasGenericRequirements,
+           let typeNameForLookup = typeName.name.split(separator: " ").first,
+           !typeNameForLookup.isEmpty {
             // we should consider if we are looking up return type of a method with generic constraints
             // where `typeName` passed would include `... where ...` suffix
-            let typeNameForLookup = typeName.name.split(separator: " ").first!
             let genericRequirements: [GenericRequirement]
             if let requirements = containingType?.genericRequirements, !requirements.isEmpty {
                 genericRequirements = requirements
@@ -6411,6 +6420,12 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
     /// Protocols this type implements. Does not contain classes in case where composition (`&`) is used in the declaration
     public var implements: [String: Type] = [:]
 
+    // sourcery: skipEquality, skipDescription
+    /// Protocols this type implements, sorted by name.
+    public var implementedTypes: [Type] {
+        return implements.values.sorted { $0.name < $1.name }
+    }
+
     /// Contained types
     public var containedTypes: [Type] {
         didSet {
@@ -7959,6 +7974,7 @@ import JavaScriptCore
     var basedTypes: [String: Type] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
+    var implementedTypes: [Type] { get }
     var containedTypes: [Type] { get }
     var containedType: [String: Type] { get }
     var parentName: String? { get }
@@ -8057,6 +8073,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var basedTypes: [String: Type] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
+    var implementedTypes: [Type] { get }
     var containedTypes: [Type] { get }
     var containedType: [String: Type] { get }
     var parentName: String? { get }
@@ -8160,6 +8177,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var basedTypes: [String: Type] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
+    var implementedTypes: [Type] { get }
     var containedTypes: [Type] { get }
     var containedType: [String: Type] { get }
     var parentName: String? { get }
@@ -8337,6 +8355,7 @@ extension Modifier: ModifierAutoJSExport {}
     var basedTypes: [String: Type] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
+    var implementedTypes: [Type] { get }
     var containedTypes: [Type] { get }
     var containedType: [String: Type] { get }
     var parentName: String? { get }
@@ -8387,6 +8406,7 @@ extension Protocol: ProtocolAutoJSExport {}
     var basedTypes: [String: Type] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
+    var implementedTypes: [Type] { get }
     var containedTypes: [Type] { get }
     var containedType: [String: Type] { get }
     var parentName: String? { get }
@@ -8448,6 +8468,7 @@ extension SetType: SetTypeAutoJSExport {}
     var basedTypes: [String: Type] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
+    var implementedTypes: [Type] { get }
     var containedTypes: [Type] { get }
     var containedType: [String: Type] { get }
     var parentName: String? { get }
@@ -8556,6 +8577,7 @@ extension TupleType: TupleTypeAutoJSExport {}
     var basedTypes: [String: Type] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
+    var implementedTypes: [Type] { get }
     var containedTypes: [Type] { get }
     var containedType: [String: Type] { get }
     var parentName: String? { get }
@@ -8656,6 +8678,7 @@ extension Variable: VariableAutoJSExport {}
 
 
 #endif
+
 """),
     .init(name: "Typed.generated.swift", content:
 """
