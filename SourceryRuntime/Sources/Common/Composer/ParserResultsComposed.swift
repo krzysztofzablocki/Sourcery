@@ -661,6 +661,70 @@ internal struct ParserResultsComposed {
         let set = typeName.set.map { SetType(name: $0.name, elementTypeName: $0.elementTypeName, elementType: $0.elementType) }
         set?.name = aliased.name
 
+        // When the typealias is generic (e.g. `typealias Foo<T> = Bar<T, Never>`),
+        // substitute the typealias definition's generic placeholders with the
+        // concrete type arguments from the usage site.
+        let resolvedGeneric: GenericType?
+        if let aliasTypealias = aliased.typealias,
+           let aliasGeneric = aliasTypealias.typeName.generic,
+           let usageSiteGeneric = typeName.generic {
+            // Build a mapping from the typealias's placeholder names to the
+            // concrete types at the usage site.
+            // e.g. typealias CurrentValuePublisher<Value> = AnyPublisher<Value, Never>
+            //      usage: CurrentValuePublisher<[MyDataModel]?>
+            //      → mapping: ["Value": "[MyDataModel]?"]
+            //
+            // The alias name (e.g. "CurrentValuePublisher") has the same number
+            // of generic parameters as the usage site. To find the placeholder
+            // names we look at the alias definition's *own* generic parameter
+            // list.  Sourcery stores the alias `typeName` as the RHS
+            // (e.g. `AnyPublisher<Value, Never>`), so the placeholder names
+            // appear as type-parameter names in the RHS that match the LHS
+            // parameter names.  Since Sourcery does not store the LHS generic
+            // parameter list on `Typealias`, we infer them: any type-parameter
+            // in the RHS generic that is NOT a known type is a placeholder.
+            //
+            // A simpler and more reliable heuristic: pair up the usage-site
+            // parameters with the alias name's parameters positionally —
+            // both have the same arity.
+            var placeholderMapping = [String: TypeName]()
+            for (index, usageParam) in usageSiteGeneric.typeParameters.enumerated() {
+                // The placeholder name at this position is inferred from the
+                // alias RHS by checking which RHS parameters are *not* concrete
+                // types.  However the most robust approach is to note that the
+                // LHS generic parameter at position `index` corresponds to the
+                // usage-site parameter at the same position.
+                //
+                // We scan the RHS generic for parameters whose typeName matches
+                // no known type and build the mapping.
+                // For safety, just iterate and map positionally if within bounds.
+                if index < aliasGeneric.typeParameters.count {
+                    let rhsParam = aliasGeneric.typeParameters[index]
+                    let rhsName = rhsParam.typeName.unwrappedTypeName
+                    // Check if this RHS parameter is a placeholder (not a known type)
+                    if typeMap[rhsName] == nil && resolvedTypealiases[rhsName] == nil {
+                        placeholderMapping[rhsName] = usageParam.typeName
+                    }
+                }
+            }
+
+            if !placeholderMapping.isEmpty {
+                // Substitute placeholders in the RHS generic type parameters
+                let substitutedParams = aliasGeneric.typeParameters.map { param -> GenericTypeParameter in
+                    let paramName = param.typeName.unwrappedTypeName
+                    if let concreteTypeName = placeholderMapping[paramName] {
+                        return GenericTypeParameter(typeName: concreteTypeName, type: param.type)
+                    }
+                    return param
+                }
+                resolvedGeneric = GenericType(name: aliasGeneric.name, typeParameters: substitutedParams)
+            } else {
+                resolvedGeneric = aliasGeneric
+            }
+        } else {
+            resolvedGeneric = aliased.typealias?.typeName.generic ?? generic
+        }
+
         return TypeName(name: aliased.name,
                         isOptional: typeName.isOptional,
                         isImplicitlyUnwrappedOptional: typeName.isImplicitlyUnwrappedOptional,
@@ -669,7 +733,7 @@ internal struct ParserResultsComposed {
                         dictionary: aliased.typealias?.typeName.dictionary ?? dictionary,
                         closure: aliased.typealias?.typeName.closure ?? typeName.closure,
                         set: aliased.typealias?.typeName.set ?? set,
-                        generic: aliased.typealias?.typeName.generic ?? generic
+                        generic: resolvedGeneric
         )
     }
 
