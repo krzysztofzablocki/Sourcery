@@ -1407,6 +1407,68 @@ class ParserComposerSpec: QuickSpec {
                         }
                     }
 
+                    context("given generic typealias") {
+                        it("substitutes placeholder type parameters with concrete types from usage site") {
+                            let code = """
+                                       typealias MyPublisher<Value> = Result<Value, Never>
+                                       protocol DataPublishing {
+                                           var itemsPublisher: MyPublisher<[String]?> { get }
+                                       }
+                                       """
+                            let types = parse(code)
+                            let proto = types.first(where: { $0.name == "DataPublishing" })
+                            let variable = proto?.variables.first
+
+                            // actualTypeName should resolve to Result<[String]?, Never>
+                            let actualGeneric = variable?.typeName.actualTypeName?.generic
+                            expect(actualGeneric?.name).to(equal("Result"))
+                            expect(actualGeneric?.typeParameters).to(haveCount(2))
+                            // First type parameter should be the concrete type from usage site, not the placeholder "Value"
+                            expect(actualGeneric?.typeParameters.first?.typeName.name).to(equal("[String]?"))
+                            // Second type parameter should remain "Never" (it's a concrete type in the typealias RHS)
+                            expect(actualGeneric?.typeParameters.last?.typeName.name).to(equal("Never"))
+                        }
+
+                        it("substitutes multiple placeholder type parameters with concrete types") {
+                            let code = """
+                                       typealias MyResult<Success, Failure> = Result<Success, Failure>
+                                       protocol Service {
+                                           var result: MyResult<String, Error> { get }
+                                       }
+                                       """
+                            let types = parse(code)
+                            let proto = types.first(where: { $0.name == "Service" })
+                            let variable = proto?.variables.first
+
+                            let actualGeneric = variable?.typeName.actualTypeName?.generic
+                            expect(actualGeneric?.name).to(equal("Result"))
+                            expect(actualGeneric?.typeParameters).to(haveCount(2))
+                            expect(actualGeneric?.typeParameters.first?.typeName.name).to(equal("String"))
+                            expect(actualGeneric?.typeParameters.last?.typeName.name).to(equal("Error"))
+                        }
+
+                        it("does not substitute concrete types that exist in the type map") {
+                            let code = """
+                                       struct Never {}
+                                       typealias MyPublisher<Value> = Result<Value, Never>
+                                       protocol Publishing {
+                                           var publisher: MyPublisher<Int> { get }
+                                       }
+                                       """
+                            let types = parse(code)
+                            let proto = types.first(where: { $0.name == "Publishing" })
+                            let variable = proto?.variables.first
+
+                            let actualGeneric = variable?.typeName.actualTypeName?.generic
+                            expect(actualGeneric?.name).to(equal("Result"))
+                            expect(actualGeneric?.typeParameters).to(haveCount(2))
+                            // "Value" placeholder should be substituted with "Int"
+                            expect(actualGeneric?.typeParameters.first?.typeName.name).to(equal("Int"))
+                            // "Never" is a known type, should NOT be substituted
+                            expect(actualGeneric?.typeParameters.last?.typeName.name).to(equal("Never"))
+                        }
+                    }
+
                     context("given method parameter") {
                         it("replaces method parameter type alias with actual type") {
                             let expectedMethodParameter = MethodParameter(name: "foo", index: 0, typeName: TypeName(name: "FooAlias", actualTypeName: TypeName(name: "Foo")), type: Class(name: "Foo"))
