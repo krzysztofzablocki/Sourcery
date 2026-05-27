@@ -38,6 +38,23 @@ class FileParserMethodsSpec: QuickSpec {
                         MethodParameter(name: "anotherSome", index: 1, typeName: TypeName(name: "inout String"), isInout: true)
                     ], returnTypeName: TypeName(name: "Void"), definedInTypeName: TypeName(name: "Foo"))))
                 }
+
+                it("extracts methods with non-inout type specifiers") {
+                    let methods = parse("""
+                    class Foo {
+                        func fooSending(extractItem: @Sendable @escaping (String) -> sending Item?)
+                        func fooIsolated(isolation: isolated (any Actor)? = #isolation)
+                        func fooConsuming(conversation: consuming Conversation)
+                    }
+                    """)[0].methods
+
+                    expect(methods.map { $0.parameters.first?.`inout` }).to(equal([false, false, false]))
+                    expect(methods.map { $0.parameters.first?.typeName.name }).to(equal([
+                        "(@Sendable @escaping (String) -> sending Item?)",
+                        "(any Actor)?",
+                        "Conversation"
+                    ]))
+                }
                 
                 it("extracts methods with inout closure") {
                     let method = parse(
