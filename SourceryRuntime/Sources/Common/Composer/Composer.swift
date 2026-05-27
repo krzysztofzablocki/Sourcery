@@ -24,12 +24,21 @@ public enum Composer {
     public static func uniqueTypesAndFunctions(_ parserResult: FileParserResult, serial: Bool = false) -> (types: [Type], functions: [SourceryMethod], typealiases: [Typealias]) {
         let composed = ParserResultsComposed(parserResult: parserResult)
 
+        let resolveTypeLock = NSLock()
         let resolveType = { (typeName: TypeName, containingType: Type?) -> Type? in
-            composed.resolveType(typeName: typeName, containingType: containingType)
+            var result: Type?
+            resolveTypeLock.lock()
+            result = composed.resolveType(typeName: typeName, containingType: containingType)
+            resolveTypeLock.unlock()
+            return result
         }
 
         let methodResolveType = { (typeName: TypeName, containingType: Type?, method: Method) -> Type? in
-            composed.resolveType(typeName: typeName, containingType: containingType, method: method)
+            var result: Type?
+            resolveTypeLock.lock()
+            result =  composed.resolveType(typeName: typeName, containingType: containingType, method: method)
+            resolveTypeLock.unlock()
+            return result
         }
 
         let processType = { (type: Type) in
