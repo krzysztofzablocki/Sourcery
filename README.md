@@ -201,7 +201,7 @@ Inside a project/package that uses this command plugin, right-click the project 
 - `--prune` [default: false] - Prune empty generated files
 - `--version` - Display the current version of Sourcery
 - `--help` - Display help information
-- `--cacheBasePath` - Base path to the cache directory. Can be overriden by the config file.
+- `--cacheBasePath` - Base path to the cache directory. Can be overridden by the config file.
 - `--buildPath` - Path to directory used when building from .swifttemplate files. This defaults to system temp directory
 - `--hideVersionHeader` [default: false] - Stop adding the Sourcery version to the generated files headers.
 - `--headerPrefix` - Additional prefix for headers.
@@ -246,7 +246,7 @@ To clarify what is expected of our community, Sourcery has adopted the code of c
 
 If you'd like to support Sourcery development you can do so through [GitHub Sponsors](https://github.com/sponsors/krzysztofzablocki) or [Open Collective](https://opencollective.com/sourcery), it's highly appreciated 🙇‍
 
-If you are a company and would like to sponsor the project directly and get it's logo here, you can [contact me directly](mailto:krzysztof.zablocki@pixle.pl?subject=[Sourcery-Sponsorship])
+If you are a company and would like to sponsor the project directly and get its logo here, you can [contact me directly](mailto:krzysztof.zablocki@pixle.pl?subject=[Sourcery-Sponsorship])
 
 ### Sponsors 
 
