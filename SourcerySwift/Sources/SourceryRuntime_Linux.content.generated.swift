@@ -8465,7 +8465,7 @@ extension NSCoder {
     }
 
     fileprivate func maybeDecode<E>(forKey: String) -> E? {
-        guard let object = self.decodeObject(forKey: forKey) else {
+        guard forKey != "parent", let object = self.decodeObject(forKey: forKey) else {
             return nil
         }
 
