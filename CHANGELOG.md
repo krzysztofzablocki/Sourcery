@@ -1,5 +1,18 @@
 # Sourcery CHANGELOG
 
+## 2.4.1
+* Fix SwiftPM resolution failing with "depends on an unstable-version package 'swift-package-manager'" when depending on Sourcery with a version requirement on Swift 6.2+. Sourcery no longer depends on swift-package-manager; manifests for `package:` sources are read via `swift package dump-package`, so the `swift` toolchain must be available on `PATH` when using them.
+* Require swift-syntax 602.0.0+ when building with Swift 6.2+
+
+## 2.4.0
+* Break out of typealias cycles (#1446) — @erichoracek
+* Update documentation link to GH Pages (#1450) — @musiienko
+* Fix ignore hidden files (#1451) — @escfrya
+* Fix crash on trailing-comma generic arguments (#1453) — @NachoSoto
+* Fix AutoMockable mock when associated type name collides with a concrete type (#1459) — @matt-livefront
+* Fix: substitute generic type parameters when resolving typealiases (#1463) — @shilei365
+* Fix file annotation content reuse in watch mode (#1464) — @sorinc03
+
 ## 2.3.0
 * Added `withExtendedLifetime` support for better lifetime management in templates (#1419) — @swiftty
 * Fix PBXGroup duplication while linking (#1422, #1423) — @markmax12
