@@ -350,3 +350,16 @@ protocol NotMockedSendableProtocol: Sendable {}
 protocol SendableSendableProtocol: NotMockedSendableProtocol {
   var value: Any { get }
 }
+
+// Reproduces bug: associated type name collides with a concrete struct,
+// causing the constraint protocol's variable list to be polluted via Type.extend.
+protocol CollisionHandlerProtocol {
+    associatedtype CollisionAssocType: Sendable
+}
+
+struct CollisionAssocType {
+    var collisionProp: String
+}
+
+// sourcery: AutoMockable
+protocol ProtocolWithAssociatedTypeCollision: Sendable {}
