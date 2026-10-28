@@ -217,8 +217,13 @@ open class SwiftTemplate {
                 try build()
                 // attempt to create cache dir
                 try? cachePath.mkdir()
-                // attempt to move to the created `cacheDir`
-                try? originalBinaryPath.copy(destinationBinaryPath)
+                // copy to a temporary file and rename it into the `cacheDir`, so concurrent runs never see a partially copied binary
+                let temporaryBinaryPath = cachePath + "\(hashPath).\(UUID().uuidString).tmp"
+                if (try? originalBinaryPath.copy(temporaryBinaryPath)) != nil {
+                    if (try? FileManager.default.moveItem(atPath: temporaryBinaryPath.string, toPath: destinationBinaryPath.string)) == nil {
+                        try? temporaryBinaryPath.delete()
+                    }
+                }
             }
             // create a link to the compiled binary in a unique stable location
             if !buildDir.exists {
@@ -226,6 +231,8 @@ open class SwiftTemplate {
             }
             originalBinaryPath = buildDir + hashPath
             destinationBinaryPath = destinationBinaryPath.isRelative ? destinationBinaryPath.absolute() : destinationBinaryPath
+            // a retried render may have already created the link
+            try? FileManager.default.removeItem(atPath: originalBinaryPath.string)
             try FileManager.default.createSymbolicLink(atPath: originalBinaryPath.string, withDestinationPath: destinationBinaryPath.string)
         } else {
             try build()
