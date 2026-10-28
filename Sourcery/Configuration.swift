@@ -3,10 +3,6 @@ import XcodeProj
 import PathKit
 import Yams
 import SourceryRuntime
-import Basics
-import TSCBasic
-import Workspace
-import PackageModel
 import SourceryFramework
 import SourceryUtils
 
@@ -173,21 +169,7 @@ public struct Package {
         }
         let path = Path(packageRootPath, relativeTo: relativePath)
         
-        let packagePath = try Basics.AbsolutePath(validating: path.string)
-        let observability = ObservabilitySystem { Log.verbose("\($0): \($1)") }
-        let workspace = try Workspace(forRootPackage: packagePath)
-
-        var manifestResult: Result<Manifest, Error>?
-        let semaphore = DispatchSemaphore(value: 0)
-        workspace.loadRootManifest(at: packagePath, observabilityScope: observability.topScope, completion: { result in
-            manifestResult = result
-            semaphore.signal()
-        })
-        semaphore.wait()
-        
-        guard let manifest = try manifestResult?.get() else {
-            throw Configuration.Error.invalidSources(message: "Unable to load manifest")
-        }
+        let manifest = try Package.loadManifest(at: path)
         self.root = path
         let targetNames: [String]
         if let targets = dict["target"] as? [String] {
@@ -203,11 +185,46 @@ public struct Package {
                 return nil
             }
             let rootPath = target.path.map { Path($0, relativeTo: path) } ?? Path(target.name, relativeTo: sourcesPath)
-            let excludePaths = target.exclude.map { path in
+            let excludePaths = (target.exclude ?? []).map { path in
                 Path(path, relativeTo: rootPath)
             }
             return Target(name: target.name, root: rootPath, excludes: excludePaths)
         })
+    }
+
+    private struct Manifest: Decodable {
+        struct Target: Decodable {
+            let name: String
+            let path: String?
+            let exclude: [String]?
+        }
+
+        let targets: [Target]
+    }
+
+    /// Evaluates the package manifest with the active toolchain via `swift package dump-package`.
+    private static func loadManifest(at path: Path) throws -> Manifest {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+        process.arguments = ["swift", "package", "dump-package", "--package-path", path.string]
+        let output = Pipe()
+        let errorOutput = Pipe()
+        process.standardOutput = output
+        process.standardError = errorOutput
+        try process.run()
+        let data = output.fileHandleForReading.readDataToEndOfFile()
+        let errorData = errorOutput.fileHandleForReading.readDataToEndOfFile()
+        process.waitUntilExit()
+
+        guard process.terminationStatus == 0 else {
+            let message = String(data: errorData, encoding: .utf8) ?? ""
+            throw Configuration.Error.invalidSources(message: "Unable to load manifest at \(path): \(message)")
+        }
+        do {
+            return try JSONDecoder().decode(Manifest.self, from: data)
+        } catch {
+            throw Configuration.Error.invalidSources(message: "Unable to load manifest at \(path): \(error)")
+        }
     }
 }
 

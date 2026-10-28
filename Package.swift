@@ -15,7 +15,6 @@ var sourceryLibDependencies: [Target.Dependency] = [
     "StencilSwiftKit",
     .product(name: "SwiftSyntax", package: "swift-syntax"),
     "XcodeProj",
-    .product(name: "SwiftPM-auto", package: "swift-package-manager"),
 ]
 
 // Note: when Swift Linux doesn't bug out on [String: String], add a test back for it
@@ -258,15 +257,14 @@ var dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/kylef/PathKit.git", exact: "1.0.1"),
     .package(url: "https://github.com/art-divin/StencilSwiftKit.git", exact: "2.10.4"),
     .package(url: "https://github.com/tuist/XcodeProj.git", exact: "8.24.6"),
-    .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0"),
     .package(url: "https://github.com/Quick/Quick.git", from: "3.0.0"),
     .package(url: "https://github.com/Quick/Nimble.git", from: "9.0.0"),
 ]
 
 #if compiler(>=6.2)
-dependencies.append(.package(url: "https://github.com/swiftlang/swift-package-manager.git", revision: "swift-6.2-RELEASE"))
+dependencies.append(.package(url: "https://github.com/swiftlang/swift-syntax.git", from: "602.0.0"))
 #else
-dependencies.append(.package(url: "https://github.com/art-divin/swift-package-manager.git", exact: "1.0.8"))
+dependencies.append(.package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0"))
 #endif
 
 #if !canImport(ObjectiveC)
