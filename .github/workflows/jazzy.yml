@@ -35,7 +35,7 @@ jobs:
         rake docs
     - uses: EndBug/add-and-commit@v9.1.3
       with:
-        add: '.'
+        add: 'docs'
         message: 'Update Docs'
         committer_name: GitHub Actions
         committer_email: actions@github.com
