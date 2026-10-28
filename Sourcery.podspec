@@ -3,10 +3,10 @@ Pod::Spec.new do |s|
   s.name         = "Sourcery"
   s.version      = "2.4.1"
   s.summary      = "A tool that brings meta-programming to Swift, allowing you to code generate Swift code."
-  s.ios.deployment_target = '12'
-  s.osx.deployment_target = '10.15'
-  s.tvos.deployment_target = '12'
-  s.watchos.deployment_target = '4'
+  s.ios.deployment_target = '15'
+  s.osx.deployment_target = '13'
+  s.tvos.deployment_target = '15'
+  s.watchos.deployment_target = '9'
 
   s.description  = <<-DESC
                  A tool that brings meta-programming to Swift, allowing you to code generate Swift code.

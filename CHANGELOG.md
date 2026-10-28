@@ -4,6 +4,7 @@
 * Fix SwiftPM resolution failing with "depends on an unstable-version package 'swift-package-manager'" when depending on Sourcery with a version requirement on Swift 6.2+. Sourcery no longer depends on swift-package-manager; manifests for `package:` sources are read via `swift package dump-package`, so the `swift` toolchain must be available on `PATH` when using them.
 * Require swift-syntax 602.0.0+ when building with Swift 6.2+
 * Fix intermittent "A file with the same name already exists" error when the same Swift template is rendered concurrently
+* CocoaPods: minimum deployment targets raised to iOS 15, macOS 13, tvOS 15 and watchOS 9 (the oldest supported by current Xcode)
 
 ## 2.4.0
 * Break out of typealias cycles (#1446) — @erichoracek

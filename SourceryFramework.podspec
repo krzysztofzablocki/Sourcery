@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
 
   s.source_files = "SourceryFramework/Sources/**/*.swift"
   
-  s.osx.deployment_target  = '10.15'
+  s.osx.deployment_target  = '13'
   
   s.dependency 'SourceryUtils'
   s.dependency 'SourceryRuntime'
